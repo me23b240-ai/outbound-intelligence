@@ -1,0 +1,33 @@
+{
+  "name": "outbound-intelligence",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test",
+    "dev": "node --watch src/dev-server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/me23b240-ai/outbound-intelligence.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/me23b240-ai/outbound-intelligence/issues"
+  },
+  "homepage": "https://github.com/me23b240-ai/outbound-intelligence#readme",
+  "dependencies": {
+    "@google/genai": "^2.32.0",
+    "@supabase/supabase-js": "^2.118.0",
+    "@vercel/functions": "^3.10.5",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "eslint": "^10.14.0"
+  }
+}
