@@ -9,11 +9,20 @@ import { imports } from "./imports.js";
 import { gmail } from "./gmail.js";
 import { settings } from "./settings.js";
 import { linkedin } from "./linkedin.js";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const publicDir = path.resolve(__dirname, "../public");
 app.use(express.json({ limit: "1mb" }));
 app.use(originCheck);
-app.use(express.static("public"));
+app.use(express.static(publicDir));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(publicDir, "index.html"));
+});
 
 app.get("/api/healthz", (req, res) => res.json({ ok: true }));
 
