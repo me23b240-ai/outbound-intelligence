@@ -3,8 +3,7 @@ import { env } from "./env.js";
 
 const MAX_AGE = 60 * 60 * 12;
 
-const sign = (v) =>
-  crypto.createHmac("sha256", env.SESSION_SECRET).update(v).digest("base64url");
+const sign = (v) => crypto.createHmac("sha256", env.SESSION_SECRET).update(v).digest("base64url");
 
 function safeEqual(a, b) {
   const x = Buffer.from(a);
@@ -13,9 +12,7 @@ function safeEqual(a, b) {
 }
 
 function makeToken() {
-  const payload = Buffer.from(
-    JSON.stringify({ exp: Date.now() + MAX_AGE * 1000 })
-  ).toString("base64url");
+  const payload = Buffer.from(JSON.stringify({ exp: Date.now() + MAX_AGE * 1000 })).toString("base64url");
   return payload + "." + sign(payload);
 }
 
@@ -61,10 +58,7 @@ export function login(req, res) {
   if (!safeEqual(pw, env.DEMO_PASSWORD)) {
     return res.status(401).json({ error: { code: "bad_password", message: "Wrong password" } });
   }
-  res.setHeader(
-    "Set-Cookie",
-    `session=${makeToken()}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${MAX_AGE}${secure}`
-  );
+  res.setHeader("Set-Cookie", `session=${makeToken()}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${MAX_AGE}${secure}`);
   res.json({ ok: true });
 }
 

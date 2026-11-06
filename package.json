@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node --test",
     "dev": "node --watch src/dev-server.js"
   },
   "repository": {

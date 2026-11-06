@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -7,358 +7,81 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --paper: #EDF0EB;
-    --sheet: #F9FAF7;
-    --ink: #1B2A33;
-    --muted: #5C6B73;
-    --rule: #D3D9D2;
-    --accent: #1D5B79;
-    --accent-hover: #164860;
-    --ok: #2B7A4B;   --ok-bg: #DDEFE3;
-    --warn: #7A4F08; --warn-bg: #F6E9CC;
-    --bad: #A23B2A;  --bad-bg: #F5DDD7;
-    --quiet: #4F5E66; --quiet-bg: #E1E6E0;
-    --radius: 6px;
-  }
-  * { box-sizing: border-box; }
-  html { background: var(--paper); }
-  body {
-    margin: 0;
-    font-family: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
-    color: var(--ink);
-    font-size: 16px;
-    line-height: 1.5;
-    min-height: 100vh;
-  }
-  .hidden { display: none !important; }
-
-  header.bar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1rem clamp(1rem, 4vw, 2.5rem);
-    border-bottom: 1px solid var(--rule);
-    background: var(--sheet);
-  }
-  .brand { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.01em; }
-  .link-btn {
-    background: none; border: 0; padding: .35rem .5rem; color: var(--accent);
-    font: inherit; font-weight: 500; cursor: pointer; border-radius: var(--radius);
-  }
-  .link-btn:hover { text-decoration: underline; }
-
-  :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
-
-  main { padding: clamp(1rem, 4vw, 2.5rem); max-width: 1200px; margin: 0 auto; }
-
-  /* login */
-  .login { max-width: 420px; margin: 8vh auto 0; }
-  .login h1 { font-size: 2rem; line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 .6rem; }
-  .login p.lead { color: var(--muted); margin: 0 0 1.5rem; max-width: 36ch; }
-
-  /* working layout */
-  .work { display: grid; gap: 1.5rem; align-items: start; }
-  @media (min-width: 900px) { .work { grid-template-columns: 320px 1fr; } }
-
-  .panel {
-    background: var(--sheet);
-    border: 1px solid var(--rule);
-    border-radius: var(--radius);
-    padding: 1.25rem;
-  }
-  .panel h2 { font-size: 1.1rem; margin: 0 0 1rem; letter-spacing: -0.01em; }
-
-  .field { display: grid; gap: .3rem; margin-bottom: .9rem; }
-  .field label { font-size: .875rem; font-weight: 500; }
-  .field .opt { color: var(--muted); font-weight: 400; }
-  input[type=text], input[type=email], input[type=url], input[type=password], input[type=search] {
-    width: 100%; padding: .6rem .7rem; font: inherit; color: var(--ink);
-    background: #fff; border: 1px solid #B9C2BA; border-radius: var(--radius);
-  }
-  input::placeholder { color: #8A979D; }
-  input:hover { border-color: #8E9B93; }
-
-  button.primary {
-    width: 100%; padding: .7rem 1rem; font: inherit; font-weight: 700;
-    color: #fff; background: var(--accent); border: 0; border-radius: var(--radius);
-    cursor: pointer; transition: background .15s;
-  }
-  button.primary:hover { background: var(--accent-hover); }
-  button.primary:disabled { opacity: .6; cursor: default; }
-
-  #msg { min-height: 1.4rem; margin: .75rem 0 0; font-size: .9rem; }
-  #msg.error { color: var(--bad); }
-  #msg.good { color: var(--ok); }
-
-  /* ledger */
-  .ledger-head { display: flex; flex-wrap: wrap; gap: 1rem; align-items: baseline; justify-content: space-between; margin-bottom: 1rem; }
-  .ledger-head h2 { margin: 0; }
-  .count { color: var(--muted); font-weight: 400; margin-left: .4rem; }
-  .ledger-head input { max-width: 260px; }
-
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; min-width: 640px; }
-  th {
-    text-align: left; font-size: .85rem; font-weight: 500; color: var(--muted);
-    padding: .5rem .75rem; border-bottom: 2px solid var(--ink);
-  }
-  td { padding: .8rem .75rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
-  tbody tr:hover { background: #F0F3EE; }
-  td .name { font-weight: 700; }
-  td .sub { color: var(--muted); font-size: .875rem; }
-  td.date { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
-
-  .tag {
-    display: inline-block; padding: .1rem .55rem; border-radius: 999px;
-    font-size: .8rem; font-weight: 500; white-space: nowrap;
-  }
-  .tag.quiet { color: var(--quiet); background: var(--quiet-bg); }
-  .tag.ok    { color: var(--ok);    background: var(--ok-bg); }
-  .tag.warn  { color: var(--warn);  background: var(--warn-bg); }
-  .tag.bad   { color: var(--bad);   background: var(--bad-bg); }
-
-  .empty { padding: 2.5rem 1rem; text-align: center; color: var(--muted); }
-
-  tr.fresh td { animation: flash 1.6s ease-out; }
-  @keyframes flash { from { background: #D6E8F0; } to { background: transparent; } }
-  @media (prefers-reduced-motion: reduce) {
-    tr.fresh td { animation: none; }
-    button.primary { transition: none; }
-  }
-</style>
+<link rel="stylesheet" href="/styles.css">
 </head>
 <body>
 
-<header class="bar">
-  <span class="brand">Outbound Intelligence</span>
-  <button id="logout" class="link-btn hidden" type="button">Log out</button>
+<header class="topbar">
+  <div class="topbar-in">
+    <span class="brand">Outbound Intelligence</span>
+    <nav id="nav" class="nav hidden" aria-label="Main">
+      <button class="navtab" type="button" data-view="dashboard">Dashboard</button>
+      <button class="navtab" type="button" data-view="runs">Runs</button>
+      <button class="navtab" type="button" data-view="profile">Seller profile</button>
+    </nav>
+    <div id="topRight" class="top-right hidden">
+      <div id="meters" class="meters"></div>
+      <span id="gmailStatus" class="gmail-status"></span>
+      <button id="logout" class="btn ghost sm" type="button">Log out</button>
+    </div>
+  </div>
 </header>
 
-<main>
+<div id="toasts" class="toasts" aria-live="polite"></div>
+
+<main class="page">
   <section id="loginBox" class="login hidden">
     <h1>Research a prospect, then write the email that fits.</h1>
     <p class="lead">Log in to add prospects and review drafts before anything is sent.</p>
-    <form id="loginForm" class="panel">
-      <div class="field">
-        <label for="password">Password</label>
-        <input id="password" type="password" autocomplete="current-password" required>
-      </div>
-      <button class="primary" type="submit">Log in</button>
+    <form id="loginForm" class="card">
+      <div class="field"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required></div>
+      <button class="btn primary block" type="submit">Log in</button>
     </form>
   </section>
 
-  <section id="appBox" class="work hidden">
-    <form id="addForm" class="panel" autocomplete="off">
-      <h2>Add a prospect</h2>
-      <div class="field">
-        <label for="full_name">Full name</label>
-        <input id="full_name" name="full_name" type="text" required>
+  <section id="viewDashboard" class="view hidden">
+    <div class="page-head">
+      <div><h1>Prospects</h1><p class="sub">Research a person, check the facts, and save a reviewed draft to Gmail.</p></div>
+      <div class="head-actions">
+        <button id="btnImport" class="btn" type="button">Import list</button>
+        <button id="btnAdd" class="btn primary" type="button">Add prospect</button>
       </div>
-      <div class="field">
-        <label for="company">Company</label>
-        <input id="company" name="company" type="text" required>
-      </div>
-      <div class="field">
-        <label for="designation">Role <span class="opt">(optional)</span></label>
-        <input id="designation" name="designation" type="text" placeholder="For example, VP Finance">
-      </div>
-      <div class="field">
-        <label for="email">Email <span class="opt">(optional)</span></label>
-        <input id="email" name="email" type="email">
-      </div>
-      <div class="field">
-        <label for="linkedin_url">LinkedIn URL <span class="opt">(optional)</span></label>
-        <input id="linkedin_url" name="linkedin_url" type="url" placeholder="https://">
-      </div>
-      <button class="primary" type="submit" id="addBtn">Add prospect</button>
-      <p id="msg" role="status" aria-live="polite"></p>
-    </form>
-
-    <div class="panel">
-      <div class="ledger-head">
-        <h2>Prospects<span class="count" id="count"></span></h2>
-        <input id="filter" type="search" placeholder="Filter by name, company or email" aria-label="Filter prospects">
+    </div>
+    <div id="tiles" class="tiles"></div>
+    <div class="card flush">
+      <div class="table-tools">
+        <input id="filter" type="search" placeholder="Search by name, company or email" aria-label="Search prospects">
+        <span id="count" class="muted small"></span>
       </div>
       <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>Prospect</th><th>Company</th><th>Email</th>
-              <th>Employment check</th><th>Draft</th><th>Added</th>
-            </tr>
-          </thead>
+        <table class="data">
+          <thead><tr><th class="w-prospect">Prospect</th><th>Company</th><th>Status</th><th>Next step</th><th>Added</th><th class="w-more"><span class="sr">More</span></th></tr></thead>
           <tbody id="rows"></tbody>
         </table>
       </div>
-      <p id="empty" class="empty hidden"></p>
+      <div id="empty" class="empty hidden"></div>
+    </div>
+    <div class="card">
+      <h2>Recent runs</h2>
+      <div id="recentRuns"></div>
     </div>
   </section>
+
+  <section id="viewRuns" class="view hidden"></section>
+  <section id="viewProfile" class="view hidden"></section>
 </main>
 
-<script>
-const $ = (id) => document.getElementById(id);
-let all = [];
+<div id="backdrop" class="backdrop hidden"></div>
+<aside id="drawer" class="drawer hidden" aria-label="Prospect review">
+  <div id="dHead" class="drawer-head"></div>
+  <div id="dScroll" class="drawer-scroll"></div>
+  <div id="actionbar" class="actionbar"></div>
+</aside>
 
-const VERIFY = {
-  none: ["Not started", "quiet"], verified: ["Verified", "ok"],
-  uncertain: ["Needs a check", "warn"], mismatch: ["Mismatch", "bad"], failed: ["Failed", "bad"],
-};
-const DRAFT = {
-  none: ["No draft", "quiet"], review: ["In review", "warn"], approved: ["Approved", "ok"],
-  rejected: ["Rejected", "bad"], gmail_draft: ["In Gmail drafts", "ok"],
-};
+<dialog id="addDlg" class="dlg wide"></dialog>
+<dialog id="editDlg" class="dlg"></dialog>
 
-async function api(path, opts = {}) {
-  const res = await fetch(path, {
-    credentials: "same-origin",
-    headers: { "Content-Type": "application/json" },
-    ...opts,
-  });
-  const body = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(body.error?.message || "Request failed");
-  return body;
-}
-
-function setMsg(text, kind) {
-  const m = $("msg");
-  m.textContent = text || "";
-  m.className = kind || "";
-}
-
-function show(loggedIn) {
-  $("loginBox").classList.toggle("hidden", loggedIn);
-  $("appBox").classList.toggle("hidden", !loggedIn);
-  $("logout").classList.toggle("hidden", !loggedIn);
-}
-
-function tag(map, key) {
-  const [label, tone] = map[key] || [key, "quiet"];
-  const span = document.createElement("span");
-  span.className = "tag " + tone;
-  span.textContent = label;
-  return span;
-}
-
-function cell(...nodes) {
-  const td = document.createElement("td");
-  for (const n of nodes) td.append(n);
-  return td;
-}
-
-function lines(main, subText) {
-  const frag = document.createDocumentFragment();
-  const a = document.createElement("div");
-  a.className = "name";
-  a.textContent = main;
-  frag.append(a);
-  if (subText) {
-    const b = document.createElement("div");
-    b.className = "sub";
-    b.textContent = subText;
-    frag.append(b);
-  }
-  return frag;
-}
-
-function render(highlightId) {
-  const q = $("filter").value.trim().toLowerCase();
-  const list = all.filter((p) =>
-    !q || [p.full_name, p.company_claimed, p.email].some((v) => (v || "").toLowerCase().includes(q))
-  );
-  const tbody = $("rows");
-  tbody.replaceChildren();
-
-  for (const p of list) {
-    const tr = document.createElement("tr");
-    if (p.id === highlightId) tr.className = "fresh";
-
-    const company = document.createElement("div");
-    company.textContent = p.company_claimed;
-    const email = document.createElement("div");
-    email.textContent = p.email || "";
-    if (!p.email) { email.className = "sub"; email.textContent = "None added"; }
-
-    const date = cell(document.createTextNode(
-      new Date(p.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short" })
-    ));
-    date.className = "date";
-
-    tr.append(
-      cell(lines(p.full_name, p.designation)),
-      cell(company),
-      cell(email),
-      cell(tag(VERIFY, p.verification_status)),
-      cell(tag(DRAFT, p.draft_status)),
-      date
-    );
-    tbody.append(tr);
-  }
-
-  $("count").textContent = all.length ? `${list.length} of ${all.length}` : "";
-  const empty = $("empty");
-  if (!list.length) {
-    empty.textContent = all.length
-      ? "No prospects match that filter."
-      : "No prospects yet. Add one on the left to get started.";
-  }
-  empty.classList.toggle("hidden", list.length > 0);
-}
-
-async function loadRows(highlightId) {
-  const { prospects } = await api("/api/prospects");
-  all = prospects;
-  render(highlightId);
-}
-
-async function start() {
-  try {
-    await api("/api/me");
-    show(true);
-    await loadRows();
-  } catch {
-    show(false);
-  }
-}
-
-$("loginForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  try {
-    await api("/api/login", { method: "POST", body: JSON.stringify({ password: $("password").value }) });
-    $("password").value = "";
-    await start();
-  } catch (err) {
-    alert(err.message);
-  }
-});
-
-$("addForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  setMsg("");
-  const body = {};
-  for (const [k, v] of new FormData(e.target)) if (v.trim()) body[k] = v.trim();
-  $("addBtn").disabled = true;
-  try {
-    const { prospect } = await api("/api/prospects", { method: "POST", body: JSON.stringify(body) });
-    e.target.reset();
-    await loadRows(prospect.id);
-    setMsg(`Added ${prospect.full_name}.`, "good");
-    $("full_name").focus();
-  } catch (err) {
-    setMsg(err.message, "error");
-  } finally {
-    $("addBtn").disabled = false;
-  }
-});
-
-$("filter").addEventListener("input", () => render());
-
-$("logout").addEventListener("click", async () => {
-  await api("/api/logout", { method: "POST" });
-  all = [];
-  show(false);
-});
-
-start();
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="/app.js"></script>
 </body>
 </html>
