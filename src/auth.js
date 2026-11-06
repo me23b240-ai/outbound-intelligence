@@ -47,7 +47,9 @@ export function requireAuth(req, res, next) {
 export function originCheck(req, res, next) {
   if (["GET", "HEAD", "OPTIONS"].includes(req.method)) return next();
   const origin = req.headers.origin;
-  if (origin && origin !== env.APP_ORIGIN) {
+  const host = req.headers["x-forwarded-host"] || req.headers.host;
+  const sameSite = !!origin && !!host && origin.replace(/^https?:\/\//, "") === host;
+  if (origin && origin !== env.APP_ORIGIN && !sameSite) {
     return res.status(403).json({ error: { code: "bad_origin", message: "Origin not allowed" } });
   }
   next();
